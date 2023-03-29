@@ -25,15 +25,19 @@ bot = Bot(TOKEN_API)
 dp = Dispatcher(bot, storage=storage)
 
 
+# Сообщение, которое выводится при запуске бота
 async def on_startup(_):
     print('Бот запущен!')
 
 
+# Нахождение всех наследников заданной вершины
 @database_sync_to_async
-def get_all_questions(parent_id):
+def get_all_children(parent_id):
     return Question.objects.filter(parent_id=parent_id)
 
 
+# Нахождение id вопроса среди всех корней деревьев
+# с использованием библиотеки нечеткого поиска
 @database_sync_to_async
 def get_question_id(text, user_language):
     possible_questions = Question.objects.filter(parent_id=None)
@@ -49,22 +53,22 @@ def get_question_id(text, user_language):
     return 0
 
 
+# Является ли вершина листом
 @database_sync_to_async
 def isLeaf(question_id):
     return 0 if Question.objects.filter(parent_id=question_id).exists() else 1
 
 
-@database_sync_to_async
-def get_question_by_id(question_id):
-    return Question.objects.get(id=question_id)
-
-
+# Нахождение всех предыдущих вопросов и ответа, на который нажал пользователь
+# Нужно для отрисовки пользователю
+# (Избыточно, нужно переделать)
 def get_previous_questions_with_answer(question_id):
     previous_answer = Question.objects.get(id=question_id)
     previous_questions = Question.objects.filter(parent_id=previous_answer.parent_id)
     return previous_answer, previous_questions
 
 
+# Создание или обновление пользовательской информации в БД (языка)
 @database_sync_to_async
 def create_or_update_user_information(user_id, language_code):
     obj, created = TelegramUser.objects.update_or_create(
@@ -72,17 +76,21 @@ def create_or_update_user_information(user_id, language_code):
     )
 
 
+# Получение языка пользователя
+# 0 - русский, 1 - английский
 @database_sync_to_async
 def get_user_language(user_id):
     current_user = TelegramUser.objects.get(user_id=user_id)
     return current_user.language_code
 
 
+# Обработчик события на команду 'start'
 @dp.message_handler(commands=['start'])
 async def start_bot(message: types.Message):
     await change_language_button_menu(message)
 
 
+# Обработчик события на команду 'помощь'
 @dp.message_handler(Text(equals=["Помощь", 'Help']))
 async def help_button_menu(message: types.Message):
     user_language_code = await get_user_language(message.from_user.id)
@@ -90,6 +98,7 @@ async def help_button_menu(message: types.Message):
                          parse_mode='HTML')
 
 
+# Обработчик события на команду 'сменить язык'
 @dp.message_handler(Text(equals=["Сменить язык", "Change language"]))
 async def change_language_button_menu(message: types.Message):
     ikb = InlineKeyboardMarkup()
@@ -98,11 +107,13 @@ async def change_language_button_menu(message: types.Message):
     await message.answer(text='<b>Выберите ваш язык:\nChoose your language:</b>', reply_markup=ikb, parse_mode='HTML')
 
 
+# Обработчик события на команду 'перезапуск бота'
 @dp.message_handler(Text(equals=["Перезапустить бота", "Restart bot"]))
 async def restart_bot_menu(message: types.Message):
     await start_bot(message)
 
 
+# Обработчик события на команду 'техподдержка'
 @dp.message_handler(Text(equals=["Техподдержка", "Support"]))
 async def support_menu(message: types.Message):
     user_language_code = await get_user_language(message.from_user.id)
@@ -113,6 +124,7 @@ async def support_menu(message: types.Message):
                          reply_markup=ikb, parse_mode='HTML')
 
 
+# Смена пользовательского интерфейса на выбранный язык пользователя
 @dp.callback_query_handler(lambda c: c.data in ['language_ru', 'language_en'])
 async def change_language(callback: types.CallbackQuery):
     if callback.data == 'language_ru':
@@ -127,15 +139,17 @@ async def change_language(callback: types.CallbackQuery):
                            reply_markup=get_menu(callback.data), chat_id=callback.from_user.id, parse_mode='HTML')
 
 
+# Обработчик на 1 вопрос пользователя, который задается пользователем с клавиатуры
+# и обрабатывается с алгоритмами нечеткого поиска
 @dp.message_handler(content_types="text")
-async def questions(message: types.Message):
+async def first_question(message: types.Message):
     user_language_code = await get_user_language(message.from_user.id)
 
     question_id_by_fuzzy_search = await get_question_id(message.text, user_language_code)
 
     if question_id_by_fuzzy_search:
 
-        answers = await get_all_questions(question_id_by_fuzzy_search)
+        answers = await get_all_children(question_id_by_fuzzy_search)
 
         ikb = InlineKeyboardMarkup()
 
@@ -158,6 +172,9 @@ async def questions(message: types.Message):
         await bot.send_message(chat_id='-1001712899180', text=reply_to_support)
 
 
+# Функция, которая редактирует сообщение
+# Для того, чтобы пользователь мог увидеть,
+# на какую кнопку с ответом он нажал
 def edit_text(previous_question_id, user_language_code):
     edit_text = text_choose_ru if user_language_code == 0 else text_choose_en
 
@@ -177,21 +194,25 @@ def edit_text(previous_question_id, user_language_code):
     return edit_text
 
 
+# Обработчик, который генерирует кнопки с выбором ответов,
+# чтобы дальше продвигаться по дереву решений
 @dp.callback_query_handler()
 async def questions_buttons(callback: types.CallbackQuery):
     user_language_code = await get_user_language(callback.from_user.id)
 
-    inline_answers = await get_all_questions(callback.data)
+    inline_answers = await get_all_children(callback.data)
 
     if await isLeaf(inline_answers[0]):
 
         if user_language_code == 0:
             the_end_answer = inline_answers[0].text_ru
+            text = text_answer_ru + '</u>' + the_end_answer + '</b>'
         else:
             the_end_answer = inline_answers[0].text_en
+            text = text_answer_en + '</u>' + the_end_answer + '</b>'
 
         await callback.message.answer(
-            text=text_answer_ru + '</u>' + the_end_answer + '</b>' if user_language_code == 0 else text_answer_en + '</u>' + the_end_answer + '</b>',
+            text=text,
             parse_mode='HTML')
 
     else:
@@ -210,15 +231,12 @@ async def questions_buttons(callback: types.CallbackQuery):
         await callback.message.answer(text=text_choose_ru if user_language_code == 0 else text_choose_en,
                                       reply_markup=ikb, parse_mode='HTML')
 
-    # await bot.delete_message(
-    #     chat_id=callback.from_user.id, message_id=callback.message.message_id)
-
     text = edit_text(callback.data, user_language_code)
 
     await bot.edit_message_text(chat_id=callback.from_user.id, message_id=callback.message.message_id, text=text,
                                 parse_mode='HTML')
 
-
+# Запуск бота
 if __name__ == '__main__':
     dp.middleware.setup(ThrottlingMiddleware())
     executor.start_polling(dp, on_startup=on_startup)

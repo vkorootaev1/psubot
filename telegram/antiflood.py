@@ -6,6 +6,7 @@ from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
 
 
+# Встроенный в библиотеку Aiogram антифлуд для бота
 class ThrottlingMiddleware(BaseMiddleware):
 
     def __init__(self, limit: int = 1):

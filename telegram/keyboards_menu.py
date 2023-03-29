@@ -2,6 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from language_ru_en import *
 
 
+# Reply-клавиатура для навигации пользователя
 def get_menu(user_language):
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
 

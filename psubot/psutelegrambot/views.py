@@ -1,11 +1,10 @@
 from rest_framework import generics, mixins, viewsets
 from rest_framework.exceptions import NotFound
 from .models import Question
-from .serializers import QuestionSerializer, TreeSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from .serializers import QuestionSerializer, TreeSerializer, ListOfRootsSerializer
 
 
+# Представление для получения дерева по id его корня
 class TreeApiView(generics.ListAPIView):
     serializer_class = TreeSerializer
     lookup_url_kwarg = 'pk'
@@ -19,6 +18,7 @@ class TreeApiView(generics.ListAPIView):
             raise NotFound()
 
 
+# Представление для создания, обновления, удаления отдельных вершин дерева
 class QuestionApiView(mixins.CreateModelMixin,
                       mixins.UpdateModelMixin,
                       mixins.RetrieveModelMixin,
@@ -29,8 +29,9 @@ class QuestionApiView(mixins.CreateModelMixin,
     serializer_class = QuestionSerializer
 
 
-class GetLastIdApiView(APIView):
+# Представление для получения списка корневых вопросов
+class ListOfRoots(generics.ListAPIView):
+    serializer_class = ListOfRootsSerializer
+    queryset = Question.objects.filter(parent_id=None).order_by('id')
 
-    def get(self, request, format=None):
-        last_row = Question.objects.latest('id')
-        return Response({'last_id': last_row.id})
+

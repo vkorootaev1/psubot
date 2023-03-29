@@ -26,7 +26,8 @@ text_support_en = 'Support'
 text_changed_language_ru = '<b>Ваш язык сменен!</b>'
 text_changed_language_en = '<b>Your language has been changed!</b>'
 
-text_start_bot_ru = '<b>Приветствуем в нашем боте!\nПожалуйста задайте свой вопрос:</b>'
+# text_start_bot_ru = '<b>Приветствуем в нашем боте!\nПожалуйста задайте свой вопрос:</b>'
+text_start_bot_ru = '<b>Здравствуйте, я ваш персональный помощник. Вы обращаетесь в Пермский государственный национальный исследовательский университет, в г. Пермь, Россия. Я помогаю абитуриентам и студентам искать нужную им информацию. Воспользуйтесь меню ниже, чтобы найти все ответы на свои вопросы.</b>'
 text_start_bot_en = '<b>Welcome to our bot!</b>\nPlease ask your question:'
 
 text_support_write_ru = 'Написать'
@@ -41,8 +42,8 @@ text_not_answer_found_en = "<b>We don't find this question, but it will appear s
 text_choose_ru = "<b>Выберите:</b>"
 text_choose_en = '<b>Choose:</b>'
 
-text_answer_ru = '<b>Ответ: <u>'
-text_answer_en = '<b>Answer: <u>'
+text_answer_ru = '<b><u>Ответ:\n'
+text_answer_en = '<b><u>Answer:\n'
 
 text_choosed_answer_ru = '\n<b>Вы выбрали: <u>'
 text_choosed_answer_en = '\n<b>You chose: <u>'

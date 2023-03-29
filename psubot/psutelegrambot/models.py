@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Question(models.Model):
-    id = models.IntegerField(primary_key=True)
     parent_id = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE, related_name='children')
     text_ru = models.TextField()
     text_en = models.TextField()
