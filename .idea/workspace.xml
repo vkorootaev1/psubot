@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe913bf7-b46f-4051-90af-f10e02cd68f4" name="Changes" comment="Last" />
+    <list default="true" id="fe913bf7-b46f-4051-90af-f10e02cd68f4" name="Changes" comment="Last">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/telegram/bot_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram/bot_settings.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -197,7 +200,7 @@
       <workItem from="1679576772298" duration="6317000" />
       <workItem from="1679737072261" duration="3518000" />
       <workItem from="1679820611617" duration="1199000" />
-      <workItem from="1680094437097" duration="6196000" />
+      <workItem from="1680094437097" duration="7130000" />
     </task>
     <task id="LOCAL-00001" summary="qwe">
       <created>1679577647234</created>
