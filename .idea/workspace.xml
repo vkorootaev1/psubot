@@ -4,27 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe913bf7-b46f-4051-90af-f10e02cd68f4" name="Changes" comment="qwe">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/psubot/psutelegrambot/migrations/0010_alter_question_id.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vue/test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/psubot/psubot/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/psubot/psubot/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/psubot/psutelegrambot/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/psubot/psutelegrambot/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/psubot/psutelegrambot/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/psubot/psutelegrambot/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/psubot/psutelegrambot/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/psubot/psutelegrambot/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/antiflood.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram/antiflood.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/keyboards_menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram/keyboards_menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/language_ru_en.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram/language_ru_en.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/telegram.py" beforeDir="false" afterPath="$PROJECT_DIR$/telegram/telegram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telegram/testing.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/test/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/vue/test/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/test/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/vue/test/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/test/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/vue/test/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/test/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/vue/test/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/test/src/components/HelloWorld.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue/test/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/vue/test/src/main.js" afterDir="false" />
-    </list>
+    <list default="true" id="fe913bf7-b46f-4051-90af-f10e02cd68f4" name="Changes" comment="Last" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -217,7 +197,7 @@
       <workItem from="1679576772298" duration="6317000" />
       <workItem from="1679737072261" duration="3518000" />
       <workItem from="1679820611617" duration="1199000" />
-      <workItem from="1680094437097" duration="5710000" />
+      <workItem from="1680094437097" duration="6196000" />
     </task>
     <task id="LOCAL-00001" summary="qwe">
       <created>1679577647234</created>
@@ -226,7 +206,21 @@
       <option name="project" value="LOCAL" />
       <updated>1679577647234</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Last">
+      <created>1680101335077</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1680101335077</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Last">
+      <created>1680101458188</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1680101458188</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,7 +228,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="qwe" />
-    <option name="LAST_COMMIT_MESSAGE" value="qwe" />
+    <MESSAGE value="Last" />
+    <option name="LAST_COMMIT_MESSAGE" value="Last" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/psubot$qw.coverage" NAME="qw Coverage Results" MODIFIED="1678807332352" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/p" />
