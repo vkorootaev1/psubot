@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from psutelegrambot.views import QuestionApiView, TreeApiView, ListOfRoots
+from psutelegrambot.views import QuestionApiView, TreeApiView, ListOfRoots, UserNotFoundQuestionView, replyUserView, \
+    MassMailingView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'api/v1/node', QuestionApiView, basename='question_node')
-
+router.register(r'api/v1/userquestionsnotfound', UserNotFoundQuestionView, basename='user_questions_not_found')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/tree/<int:pk>/', TreeApiView.as_view(), name='question_tree'),
     path('api/v1/questionsroots/', ListOfRoots.as_view(), name='questions_roots'),
+    path('api/v1/replyuser/', replyUserView.as_view(), name='reply_user'),
+    path('api/v1/massmailing/', MassMailingView.as_view(), name='mass_mailing')
 ] + router.urls

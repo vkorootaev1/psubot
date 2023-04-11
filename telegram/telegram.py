@@ -1,22 +1,21 @@
-import datetime
 import os
 import django
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from fuzzywuzzy import process
-from language_ru_en import *
 from channels.db import database_sync_to_async
 from keyboards_menu import get_menu
 from aiogram.dispatcher.filters import Text
 from antiflood import ThrottlingMiddleware
 from bot_settings import TOKEN_API
+from language_ru_en import *
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'psubot.settings'
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "True"
 django.setup()
 
-from psutelegrambot.models import Question, TelegramUser
+from psutelegrambot.models import Question, TelegramUser, UserNotFoundQuestion
 
 storage = MemoryStorage()
 
@@ -70,9 +69,9 @@ def get_previous_questions_with_answer(question_id):
 
 # Создание или обновление пользовательской информации в БД (языка)
 @database_sync_to_async
-def create_or_update_user_information(user_id, language_code):
+def create_or_update_user_information(user_id, language_code, first_name, last_name, username):
     obj, created = TelegramUser.objects.update_or_create(
-        user_id=user_id, defaults={"language_code": language_code}
+        user_id=user_id, defaults={"language_code": language_code, "first_name": first_name, "last_name": last_name, "username": username}
     )
 
 
@@ -127,10 +126,13 @@ async def support_menu(message: types.Message):
 # Смена пользовательского интерфейса на выбранный язык пользователя
 @dp.callback_query_handler(lambda c: c.data in ['language_ru', 'language_en'])
 async def change_language(callback: types.CallbackQuery):
+    first_name = callback.from_user.first_name if callback.from_user.first_name is not None else ""
+    last_name = callback.from_user.last_name if callback.from_user.last_name is not None else ""
+    username = callback.from_user.username if callback.from_user.username is not None else ""
     if callback.data == 'language_ru':
-        await create_or_update_user_information(callback.from_user.id, 0)
+        await create_or_update_user_information(callback.from_user.id, 0, first_name, last_name, username)
     else:
-        await create_or_update_user_information(callback.from_user.id, 1)
+        await create_or_update_user_information(callback.from_user.id,1, first_name, last_name, username)
     await bot.edit_message_text(chat_id=callback.from_user.id, message_id=callback.message.message_id,
                                 text=text_changed_language_ru if callback.data == 'language_ru' else text_changed_language_en,
                                 parse_mode='HTML',
@@ -143,33 +145,40 @@ async def change_language(callback: types.CallbackQuery):
 # и обрабатывается с алгоритмами нечеткого поиска
 @dp.message_handler(content_types="text")
 async def first_question(message: types.Message):
-    user_language_code = await get_user_language(message.from_user.id)
+    try:
+        user_language_code = await get_user_language(message.from_user.id)
 
-    question_id_by_fuzzy_search = await get_question_id(message.text, user_language_code)
+        question_id_by_fuzzy_search = await get_question_id(message.text, user_language_code)
 
-    if question_id_by_fuzzy_search:
+        if question_id_by_fuzzy_search:
 
-        answers = await get_all_children(question_id_by_fuzzy_search)
+            answers = await get_all_children(question_id_by_fuzzy_search)
 
-        ikb = InlineKeyboardMarkup()
+            ikb = InlineKeyboardMarkup()
 
-        for answer in answers:
+            for answer in answers:
 
-            if user_language_code == 0:
-                inline_button_text = answer.text_ru
-            else:
-                inline_button_text = answer.text_en
+                if user_language_code == 0:
+                    inline_button_text = answer.text_ru
+                else:
+                    inline_button_text = answer.text_en
 
-            ikb.add(InlineKeyboardButton(text=inline_button_text, callback_data=answer.id))
+                ikb.add(InlineKeyboardButton(text=inline_button_text, callback_data=answer.id))
 
-        await message.answer(text=text_choose_ru if user_language_code == 0 else text_choose_en, reply_markup=ikb,
-                             parse_mode='HTML')
+            await message.answer(text=text_choose_ru if user_language_code == 0 else text_choose_en, reply_markup=ikb,
+                                 parse_mode='HTML')
 
-    else:
-        await message.answer(text=text_not_answer_found_ru if user_language_code == 0 else text_not_answer_found_en,
-                             parse_mode='HTML')
-        reply_to_support = f"От пользователя: {message.from_user.id}\nТекст сообщения: {message.text}\nВремя: {datetime.datetime.now().strftime('%d-%m-%Y %H:%M')}"
-        await bot.send_message(chat_id='-1001712899180', text=reply_to_support)
+        else:
+            await message.answer(text=text_not_answer_found_ru if user_language_code == 0 else text_not_answer_found_en,
+                                 parse_mode='HTML')
+
+            UserNotFoundQuestion(
+                user_id=message.from_user.id,
+                message_id=message.message_id,
+                text=message.text
+            ).save()
+    except:
+        await change_language_button_menu(message)
 
 
 # Функция, которая редактирует сообщение
@@ -235,6 +244,11 @@ async def questions_buttons(callback: types.CallbackQuery):
 
     await bot.edit_message_text(chat_id=callback.from_user.id, message_id=callback.message.message_id, text=text,
                                 parse_mode='HTML')
+
+
+async def replyUserMessage(user_id, reply_to_message_id):
+    await bot.send_message(user_id, 'Ваш вопрос был успешно добавлен!', reply_to_message_id=reply_to_message_id)
+
 
 # Запуск бота
 if __name__ == '__main__':
