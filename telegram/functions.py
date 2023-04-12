@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram import Bot
 
-bot = Bot('6229683977:AAExh-HX6WKl_H_gV-byniMiIb62STdkuUg')
+bot = Bot('')
 
 
 async def replyUserMessage(first_name: str, user_id: int, reply_to_message_id: int, language_code: int):
